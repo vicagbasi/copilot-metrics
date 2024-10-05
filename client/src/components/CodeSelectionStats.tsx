@@ -5,7 +5,7 @@ import {
   CardDescription,
   CardHeader,
   CardTitle,
-} from './ui/card';
+} from '@/components/ui/card';
 import {
   ChartConfig,
   ChartContainer,
@@ -13,7 +13,7 @@ import {
   ChartLegendContent,
   ChartTooltip,
   ChartTooltipContent,
-} from './ui/chart';
+} from '@/components/ui/chart';
 import { CopilotUsageData } from '@/interfaces';
 
 const chartConfig = {
@@ -52,7 +52,7 @@ export function CodeSelectionStats({
                 tickLine={false}
                 tickMargin={5}
                 axisLine={true}
-                tickFormatter={value => {
+                tickFormatter={(value) => {
                   const date = new Date(value);
                   return `${date.getMonth() + 1}/${date.getDate()}`;
                 }}

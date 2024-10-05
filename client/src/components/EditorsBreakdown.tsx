@@ -2,14 +2,18 @@
 
 import { useState, useEffect } from 'react';
 import { PieChart, Pie } from 'recharts';
-import { ChartContainer, ChartTooltip, ChartTooltipContent } from './ui/chart';
+import {
+  ChartContainer,
+  ChartTooltip,
+  ChartTooltipContent,
+} from '@/components/ui/chart';
 import {
   Card,
   CardHeader,
   CardTitle,
   CardDescription,
   CardContent,
-} from './ui/card';
+} from '@/components/ui/card';
 import { CopilotUsageData } from '../interfaces';
 
 const COLORS = [
@@ -38,11 +42,11 @@ export function EditorsBreakdown({
   useEffect(() => {
     const editorMap = new Map<string, number>();
 
-    data.forEach(day => {
-      day.breakdown.forEach(item => {
+    data.forEach((day) => {
+      day.breakdown.forEach((item) => {
         editorMap.set(
           item.editor,
-          (editorMap.get(item.editor) || 0) + item.active_users
+          (editorMap.get(item.editor) || 0) + item.active_users,
         );
       });
     });
