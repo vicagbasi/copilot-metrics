@@ -1,14 +1,24 @@
 import { useState } from 'react';
-
 import { CopilotUsageData, copilotUsageData } from './interfaces';
 import { UsersComponent } from './components/UsersComponent';
 import { LanguagesBreakdown } from './components/LanguagesBreakdown';
 import { EditorsBreakdown } from './components/EditorsBreakdown';
 import { StatsComponent } from './components/Stats';
 import { CopilotChatChart } from './components/CopilotStats';
+// import { useQuery } from '@tanstack/react-query';
+// import { usageByEnterprise } from './apiClient';
+// import { ENTERPRISE } from './environment';
 
 export const CopilotDashboard: React.FC = () => {
   const [data] = useState<CopilotUsageData>(copilotUsageData);
+
+  // const { data, isLoading, isError, error } = useQuery({
+  //   queryKey: ['copilotUsageData'],
+  //   queryFn: () => usageByEnterprise(ENTERPRISE),
+  // });
+
+  // if (isLoading) return <div>Loading...</div>;
+  // if (isError) return <div>Error: {error.message}</div>;
 
   return (
     <>
