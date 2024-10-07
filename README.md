@@ -1,50 +1,64 @@
-# React + TypeScript + Vite
+# Copilot Metrics Dashboard
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+## Overview
 
-Currently, two official plugins are available:
+This application is a dashboard for visualizing GitHub Copilot usage metrics. It provides insights into how Copilot is being used across different programming languages, editors, and user activities.
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+## Features
 
-## Expanding the ESLint configuration
+- Display overall Copilot usage statistics
+- Breakdown of usage by programming languages
+- Breakdown of usage by code editors
+- Visualization of code selection and suggestion statistics
+- User activity and seat usage information
 
-If you are developing a production application, we recommend updating the configuration to enable type aware lint rules:
+## Technology Stack
 
-- Configure the top-level `parserOptions` property like this:
+- React 18
+- TypeScript
+- Vite for build tooling
+- TanStack Router for routing
+- TanStack Query for data fetching
+- Recharts for data visualization
+- Tailwind CSS for styling
 
-```js
-export default tseslint.config({
-  languageOptions: {
-    // other options...
-    parserOptions: {
-      project: ['./tsconfig.node.json', './tsconfig.app.json'],
-      tsconfigRootDir: import.meta.dirname,
-    },
-  },
-})
-```
+## Getting Started
 
-- Replace `tseslint.configs.recommended` to `tseslint.configs.recommendedTypeChecked` or `tseslint.configs.strictTypeChecked`
-- Optionally add `...tseslint.configs.stylisticTypeChecked`
-- Install [eslint-plugin-react](https://github.com/jsx-eslint/eslint-plugin-react) and update the config:
+1. Clone the repository
+2. Install dependencies:
+   ```
+   npm install
+   ```
+3. Run the development server:
+   ```
+   npm run dev
+   ```
 
-```js
-// eslint.config.js
-import react from 'eslint-plugin-react'
+## Building for Production
 
-export default tseslint.config({
-  // Set the react version
-  settings: { react: { version: '18.3' } },
-  plugins: {
-    // Add the react plugin
-    react,
-  },
-  rules: {
-    // other rules...
-    // Enable its recommended rules
-    ...react.configs.recommended.rules,
-    ...react.configs['jsx-runtime'].rules,
-  },
-})
-```
+To create a production build:
+
+## Linting
+
+To run the linter:
+
+## Project Structure
+
+- `src/`: Contains the main source code
+  - `components/`: React components for different parts of the dashboard
+  - `interfaces.tsx`: TypeScript interfaces for data structures
+  - `App.tsx`: Main application component
+  - `main.tsx`: Entry point of the application
+
+## Data
+
+The application processes and visualizes Copilot usage data, including:
+
+- Total suggestions and acceptances
+- Lines of code suggested and accepted
+- Active users
+- Breakdowns by programming language and editor
+
+## Contributing
+
+Contributions are welcome. Please ensure you follow the existing code style and add appropriate tests for new features.
