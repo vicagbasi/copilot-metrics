@@ -15,9 +15,13 @@ import {
   TableHeader,
   TableRow,
 } from '@/components/ui/table';
+import { ENTERPRISE } from '@/environment';
+import { useQuery } from '@tanstack/react-query';
+import { getCopilotSeatsForEnterprise } from '@/apiClient';
 
 export const SeatsComponent = () => {
-  const data = [
+  const isTestData = true;
+  const testData: any[] = [
     {
       login: 'octocat_org',
       githubId: 1,
@@ -35,6 +39,16 @@ export const SeatsComponent = () => {
       editor: 'vscode/1.77.3/copilot/1.86.82',
     },
   ];
+
+  const {
+    data: seatsData = [],
+    isLoading: loadingSeats,
+    isError: errorSeats,
+  } = useQuery({
+    queryKey: ['seats'], // Assuming ENTERPRISE is imported or defined in this file
+    queryFn: () => getCopilotSeatsForEnterprise(ENTERPRISE), // Fetching seats for the enterprise
+    initialData: [], // Set initial data to an empty array
+  });
 
   return (
     <>
@@ -91,28 +105,75 @@ export const SeatsComponent = () => {
                   <TableHead>Last Activity Editor</TableHead>
                 </TableRow>
               </TableHeader>
-              <TableBody>
-                {data.map((item, index) => (
-                  <TableRow key={index} className="text-sm">
-                    {' '}
-                    <TableCell className="py-1">{index + 1}</TableCell>{' '}
-                    <TableCell className="py-1">{item.login}</TableCell>
-                    <TableCell className="py-1">{item.githubId}</TableCell>
-                    <TableCell className="py-1">{item.team}</TableCell>
-                    <TableCell className="py-1">
-                      {new Date(item.lastActivity).toLocaleString('en-US', {
-                        hour: 'numeric',
-                        minute: 'numeric',
-                        hour12: true,
-                        month: 'long',
-                        day: 'numeric',
-                        year: 'numeric',
-                      })}
+
+              {loadingSeats && (
+                <TableBody>
+                  <TableRow>
+                    <TableCell colSpan={6} className="text-center">
+                      Loading...
                     </TableCell>
-                    <TableCell className="py-1">{item.editor}</TableCell>
                   </TableRow>
-                ))}
-              </TableBody>
+                </TableBody>
+              )}
+
+              {errorSeats && (
+                <TableBody>
+                  <TableRow>
+                    <TableCell colSpan={6} className="text-center">
+                      Error loading seats...
+                    </TableCell>
+                  </TableRow>
+                </TableBody>
+              )}
+
+              {seatsData && !isTestData && seatsData.length > 0 && (
+                <TableBody>
+                  {seatsData.map((item: any, index: number) => (
+                    <TableRow key={index} className="text-sm">
+                      <TableCell className="py-1">{index + 1}</TableCell>
+                      <TableCell className="py-1">{item.login}</TableCell>
+                      <TableCell className="py-1">{item.githubId}</TableCell>
+                      <TableCell className="py-1">{item.team}</TableCell>
+                      <TableCell className="py-1">
+                        {new Date(item.lastActivity).toLocaleString('en-US', {
+                          hour: 'numeric',
+                          minute: 'numeric',
+                          hour12: true,
+                          month: 'long',
+                          day: 'numeric',
+                          year: 'numeric',
+                        })}
+                      </TableCell>
+                      <TableCell className="py-1">{item.editor}</TableCell>
+                    </TableRow>
+                  ))}
+                </TableBody>
+              )}
+
+              {isTestData && (
+                <TableBody>
+                  {testData.map((item: any, index: number) => (
+                    <TableRow key={index} className="text-sm">
+                      {' '}
+                      <TableCell className="py-1">{index + 1}</TableCell>{' '}
+                      <TableCell className="py-1">{item.login}</TableCell>
+                      <TableCell className="py-1">{item.githubId}</TableCell>
+                      <TableCell className="py-1">{item.team}</TableCell>
+                      <TableCell className="py-1">
+                        {new Date(item.lastActivity).toLocaleString('en-US', {
+                          hour: 'numeric',
+                          minute: 'numeric',
+                          hour12: true,
+                          month: 'long',
+                          day: 'numeric',
+                          year: 'numeric',
+                        })}
+                      </TableCell>
+                      <TableCell className="py-1">{item.editor}</TableCell>
+                    </TableRow>
+                  ))}
+                </TableBody>
+              )}
             </Table>
           </CardContent>
         </Card>

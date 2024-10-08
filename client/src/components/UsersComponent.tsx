@@ -33,11 +33,11 @@ const processData = (data: CopilotUsageData) => {
 const chartConfig: ChartConfig = {
   totalUsers: {
     label: 'Total Users', // Updated label
-    color: 'hsl(var(--chart-2))', // Switched color
+    color: 'hsl(var(--chart-1))', // Switched color
   },
   chatUsers: {
     label: 'Chat Users', // Updated label
-    color: 'hsl(var(--chart-1))', // Switched color
+    color: 'hsl(var(--chart-2))', // Switched color
   },
 } satisfies ChartConfig;
 
@@ -84,9 +84,9 @@ export function UsersComponent({
             {(['totalUsers', 'chatUsers'] as const).map((key) => (
               <div
                 key={key}
-                className="relative z-30 flex flex-1 flex-col justify-center gap-1 border-t px-6 py-4 text-left even:border-l data-[active=true]:bg-muted/50 sm:border-l sm:border-t-0 sm:px-8 sm:py-6"
+                className="relative z-30 flex flex-1 flex-col justify-center gap-1 border-t px-8 py-4 text-left even:border-l sm:border-l sm:border-t-0 sm:px-10 sm:py-6"
               >
-                <span className="text-xs text-muted-foreground">
+                <span className="text-sm text-muted-foreground whitespace-nowrap">
                   {chartConfig[key].label}
                 </span>
                 <span className="text-lg font-bold leading-none sm:text-3xl">

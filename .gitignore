@@ -13,6 +13,24 @@ dist/
 dist-ssr/
 *.local
 
+# Ignore all env files in the client folder
+client/*.env
+# Start Generation Here
+*.csproj
+*.sln
+*bin/
+*obj/
+*.user
+*.suo
+*.ide
+*.vs/
+*.vscode/
+*wwwroot/
+# End Generation Here
+
+
+
+
 # Editor directories and files
 .vscode/
 !.vscode/extensions.json

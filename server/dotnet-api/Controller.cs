@@ -2,6 +2,7 @@ using Microsoft.AspNetCore.Mvc;
 using System.Text.Json;
 using server.dotnet_api.Models;
 using System.Net.Http.Headers;
+using dotnet_api.Models;
 
 namespace server.dotnet_api.Controllers
 {
@@ -11,11 +12,13 @@ namespace server.dotnet_api.Controllers
     {
         private readonly IHttpClientFactory _httpClientFactory;
         private readonly IConfiguration _configuration;
+        private readonly HttpClient _httpClient;
 
         public CopilotUsageController(IHttpClientFactory httpClientFactory, IConfiguration configuration)
         {
             _httpClientFactory = httpClientFactory;
             _configuration = configuration;
+            _httpClient = CreateGitHubClient();
         }
 
         private HttpClient CreateGitHubClient()
@@ -47,10 +50,8 @@ namespace server.dotnet_api.Controllers
         [HttpGet("enterprises/{enterprise}/copilot/usage")]
         public async Task<IActionResult> GetCopilotUsageForEnterprise(string enterprise, [FromQuery] UsageQueryParams queryParams)
         {
-            var httpClient = CreateGitHubClient();
             var queryString = BuildQueryString(queryParams);
-
-            var response = await httpClient.GetAsync($"enterprises/{enterprise}/copilot/usage?{queryString}");
+            var response = await _httpClient.GetAsync($"enterprises/{enterprise}/copilot/usage?{queryString}");
 
             if (response.IsSuccessStatusCode)
             {
@@ -67,10 +68,8 @@ namespace server.dotnet_api.Controllers
         [HttpGet("enterprises/{enterprise}/copilot/team/{teamSlug}/usage")]
         public async Task<IActionResult> GetCopilotUsageForTeam(string enterprise, string teamSlug, [FromQuery] UsageQueryParams queryParams)
         {
-            var httpClient = CreateGitHubClient();
             var queryString = BuildQueryString(queryParams);
-
-            var response = await httpClient.GetAsync($"enterprises/{enterprise}/team/{teamSlug}/copilot/usage?{queryString}");
+            var response = await _httpClient.GetAsync($"enterprises/{enterprise}/team/{teamSlug}/copilot/usage?{queryString}");
 
             if (response.IsSuccessStatusCode)
             {
@@ -87,10 +86,8 @@ namespace server.dotnet_api.Controllers
         [HttpGet("orgs/{org}/copilot/usage")]
         public async Task<IActionResult> GetCopilotUsageForOrg(string org, [FromQuery] UsageQueryParams queryParams)
         {
-            var httpClient = CreateGitHubClient();
             var queryString = BuildQueryString(queryParams);
-
-            var response = await httpClient.GetAsync($"orgs/{org}/copilot/usage?{queryString}");
+            var response = await _httpClient.GetAsync($"orgs/{org}/copilot/usage?{queryString}");
 
             if (response.IsSuccessStatusCode)
             {
@@ -107,10 +104,8 @@ namespace server.dotnet_api.Controllers
         [HttpGet("orgs/{org}/copilot/team/{teamSlug}/usage")]
         public async Task<IActionResult> GetCopilotUsageForOrgTeam(string org, string teamSlug, [FromQuery] UsageQueryParams queryParams)
         {
-            var httpClient = CreateGitHubClient();
             var queryString = BuildQueryString(queryParams);
-
-            var response = await httpClient.GetAsync($"orgs/{org}/team/{teamSlug}/copilot/usage?{queryString}");
+            var response = await _httpClient.GetAsync($"orgs/{org}/team/{teamSlug}/copilot/usage?{queryString}");
 
             if (response.IsSuccessStatusCode)
             {
@@ -127,7 +122,6 @@ namespace server.dotnet_api.Controllers
         [HttpGet("enterprises/{enterprise}/copilot/billing/seats")]
         public async Task<IActionResult> GetCopilotSeatsForEnterprise(string enterprise, [FromQuery] int? page = null, [FromQuery] int? per_page = null)
         {
-            var httpClient = CreateGitHubClient();
             var queryString = string.Empty;
 
             if (page.HasValue)
@@ -135,15 +129,48 @@ namespace server.dotnet_api.Controllers
             if (per_page.HasValue)
                 queryString += $"per_page={per_page}&";
 
-            // Remove the trailing '&' if it exists
             queryString = queryString.TrimEnd('&');
 
-            var response = await httpClient.GetAsync($"enterprises/{enterprise}/copilot/billing/seats?{queryString}");
+            var response = await _httpClient.GetAsync($"enterprises/{enterprise}/copilot/billing/seats?{queryString}");
 
             if (response.IsSuccessStatusCode)
             {
                 var jsonData = await response.Content.ReadAsStringAsync();
                 var result = JsonSerializer.Deserialize<SeatAssignments>(jsonData);
+                return Ok(result);
+            }
+            else
+            {
+                return StatusCode((int)response.StatusCode);
+            }
+        }
+
+        [HttpGet("organizations")]
+        public async Task<IActionResult> GetOrganizations()
+        {
+            var response = await _httpClient.GetAsync("organizations");
+
+            if (response.IsSuccessStatusCode)
+            {
+                var jsonData = await response.Content.ReadAsStringAsync();
+                var result = JsonSerializer.Deserialize<List<Organization>>(jsonData);
+                return Ok(result);
+            }
+            else
+            {
+                return StatusCode((int)response.StatusCode);
+            }
+        }
+
+        [HttpGet("orgs/{org}/teams")]
+        public async Task<IActionResult> GetTeamsForOrg(string org)
+        {
+            var response = await _httpClient.GetAsync($"orgs/{org}/teams");
+
+            if (response.IsSuccessStatusCode)
+            {
+                var jsonData = await response.Content.ReadAsStringAsync();
+                var result = JsonSerializer.Deserialize<List<Team>>(jsonData);
                 return Ok(result);
             }
             else

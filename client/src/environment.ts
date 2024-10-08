@@ -1,4 +1,4 @@
 
 
-export const API_URL = 'https://localhost:7000';
+export const API_URL = window.location.origin + '/api';
 export const ENTERPRISE = 'test-enterprise';
