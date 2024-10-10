@@ -12,20 +12,21 @@ node_modules/
 dist/
 dist-ssr/
 *.local
+**.env
 
 # Ignore all env files in the client folder
-client/*.env
 # Start Generation Here
 *.csproj
 *.sln
-*bin/
-*obj/
+**bin/
+**obj/
 *.user
 *.suo
 *.ide
 *.vs/
 *.vscode/
 *wwwroot/
+**.cache
 # End Generation Here
 
 
