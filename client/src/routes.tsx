@@ -12,22 +12,22 @@ export const RootRoute = createRootRoute({
     </RootLayout>
   ),
 });
-export const DashboardRoute = createRoute({
+
+export const HomeRoute = createRoute({
   getParentRoute: () => RootRoute,
   path: '/',
   component: CopilotDashboard,
 });
 
-export const LanguageRoute = createRoute({
+export const OverviewRoute = createRoute({
   getParentRoute: () => RootRoute,
-  path: '/language',
-  component: function About() {
-    return <div className="p-2">Hello from Language!</div>;
-  },
+  path: '/overview',
+  component: CopilotDashboard,
 });
 
+
+
 export const SeatsRoute = createRoute({
-  // Add SeatsRoute
   getParentRoute: () => RootRoute,
   path: '/seats',
   component: () => <SeatsComponent />,

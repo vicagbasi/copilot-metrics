@@ -11,7 +11,7 @@ export const RootLayout: React.FC<{ children: React.ReactNode }> = ({
           <ul className="flex space-x-6">
             <li>
               <Link
-                to="/"
+                to="/overview"
                 className="hover:text-blue-500 transition text-gray-600"
               >
                 Overview

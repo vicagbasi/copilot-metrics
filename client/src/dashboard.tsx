@@ -43,6 +43,17 @@ export const CopilotDashboard: React.FC = () => {
     initialData: [], // Set initial data to an empty array
   });
 
+  // Fetch usage by enterprise on initial load
+  const {
+    data: usageData = [],
+    isLoading: loadingUsage,
+    isError: errorUsage,
+  } = useQuery({
+    queryKey: ['usageByEnterprise'],
+    queryFn: () => getCopilotUsageForEnterprise(ENTERPRISE), // Assuming this function is defined in apiClient
+    initialData: [], // Set initial data to an empty array
+  });
+
   // Fetch teams for the selected organization with initial data as an empty array
   const {
     data: teams = [],
@@ -55,16 +66,6 @@ export const CopilotDashboard: React.FC = () => {
     initialData: [], // Set initial data to an empty array
   });
 
-  // Fetch usage by enterprise on initial load
-  const {
-    data: usageData = [],
-    isLoading: loadingUsage,
-    isError: errorUsage,
-  } = useQuery({
-    queryKey: ['usageByEnterprise'],
-    queryFn: () => getCopilotUsageForEnterprise(ENTERPRISE), // Assuming this function is defined in apiClient
-    initialData: [], // Set initial data to an empty array
-  });
 
   // Handle organization selection
   const handleOrgChange = (org: string) => {
@@ -102,7 +103,7 @@ export const CopilotDashboard: React.FC = () => {
               </SelectItem>
             ) : (
               organizations.map((org: any) => (
-                <SelectItem key={org.id} value={org.id}>
+                <SelectItem key={org.id} value={org.login}>
                   {org.name}
                 </SelectItem>
               ))
@@ -125,16 +126,14 @@ export const CopilotDashboard: React.FC = () => {
               </SelectItem>
             ) : teams.length > 0 ? (
               teams.map((team: any) => (
-                <SelectItem key={team.id} value={team.id}>
+                <SelectItem key={team.id} value={team.slug}>
                   {team.name}
                 </SelectItem>
               ))
             ) : (
-              selectedOrg && (
-                <SelectItem disabled value="no-teams">
-                  No teams available for this organization.
-                </SelectItem>
-              )
+            <SelectItem disabled value="no-teams">
+              No teams available for this organization...
+            </SelectItem>
             )}
           </SelectContent>
         </Select>
@@ -164,28 +163,29 @@ export const CopilotDashboard: React.FC = () => {
           <span className="text-gray-500">No usage data available.</span>
         )}
       </div>
+
       {usageData.length > 0 || isTestData ? (
         <div className="flex flex-wrap gap-4">
           <UsersComponent
-            className="flex-1 min-w-full md:min-w-[35%] h-full shadow-lg hover:shadow-xl transition-shadow"
-            data={isTestData ? testData : usageData}
-          />
-
-          <StatsComponent
-            className="flex-1 min-w-full md:min-w-[64%] shadow-lg hover:shadow-xl transition-shadow"
-            data={isTestData ? testData : usageData}
-          />
-          <LanguagesBreakdown
-            className="flex-1 min-w-full md:min-w-[32%] shadow-lg hover:shadow-xl transition-shadow"
-            data={isTestData ? testData : usageData}
-          />
-
-          <EditorsBreakdown
             className="flex-1 min-w-full md:min-w-[42%] shadow-lg hover:shadow-xl transition-shadow"
             data={isTestData ? testData : usageData}
           />
-          <CopilotChatChart
+          <StatsComponent
             className="flex-1 min-w-full md:min-w-[56%] shadow-lg hover:shadow-xl transition-shadow"
+            data={isTestData ? testData : usageData}
+          />
+          
+          <CopilotChatChart
+            className="flex-1 min-w-full md:min-w-[100%] shadow-lg hover:shadow-xl transition-shadow"
+            data={isTestData ? testData : usageData}
+          />
+
+          <LanguagesBreakdown
+            className="flex-1 min-w-ful pb-2 md:min-w-[50%] shadow-lg hover:shadow-xl transition-shadow"
+            data={isTestData ? testData : usageData}
+          />
+          <EditorsBreakdown
+            className="flex-1 min-w-full pb-2 md:min-w-[48%] shadow-lg hover:shadow-xl transition-shadow"
             data={isTestData ? testData : usageData}
           />
         </div>
