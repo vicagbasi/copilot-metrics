@@ -13,6 +13,7 @@ dist/
 dist-ssr/
 *.local
 **.env
+*.ps1
 
 # Ignore all env files in the client folder
 # Start Generation Here

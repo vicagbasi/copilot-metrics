@@ -1,4 +1,7 @@
-import { API_URL, ENTERPRISE } from './environment';
+
+
+export const ENTERPRISE = import.meta.env.VITE_ENTERPRISE ?? "test-enterprise";
+export const API_URL = window.location.origin + (import.meta.env.VITE_API_BASE_PATH ?? '');
 
 
 export const getCopilotUsageForEnterprise = async (enterprise: string = ENTERPRISE) => {

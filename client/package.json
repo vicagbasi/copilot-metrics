@@ -1,11 +1,12 @@
 {
   "name": "copilot-metrics",
   "private": true,
-  "version": "0.0.0",
+  "version": "0.0.1",
   "type": "module",
   "scripts": {
     "dev": "vite",
     "build": "tsc -b && vite build",
+    "build:dev-iis": "tsc -b && vite build",
     "lint": "eslint .",
     "preview": "vite preview"
   },
@@ -20,6 +21,7 @@
     "@tanstack/router-devtools": "^1.58.16",
     "class-variance-authority": "^0.7.0",
     "clsx": "^2.1.1",
+    "dotenv": "^16.4.5",
     "lucide-react": "^0.447.0",
     "path": "^0.12.7",
     "react": "^18.3.1",
@@ -31,7 +33,6 @@
   "devDependencies": {
     "@eslint/js": "^9.9.0",
     "@tanstack/router-cli": "^1.58.12",
-    "@tanstack/router-vite-plugin": "^1.58.12",
     "@types/node": "^22.7.4",
     "@types/react": "^18.3.3",
     "@types/react-dom": "^18.3.0",

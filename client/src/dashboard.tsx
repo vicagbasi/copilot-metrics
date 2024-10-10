@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 'use client';
 
 import { useState } from 'react';
@@ -21,7 +22,7 @@ import {
   getTeamsForOrg,
 } from './apiClient';
 import { useQuery } from '@tanstack/react-query';
-import { ENTERPRISE } from './environment';
+import { ENTERPRISE } from '@/apiClient';
 import { Switch } from './components/ui/switch';
 
 export const CopilotDashboard: React.FC = () => {

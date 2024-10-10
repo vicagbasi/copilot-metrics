@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 'use client';
 
 import {
@@ -15,7 +16,7 @@ import {
   TableHeader,
   TableRow,
 } from '@/components/ui/table';
-import { ENTERPRISE } from '@/environment';
+import { ENTERPRISE } from '@/apiClient';
 import { useQuery } from '@tanstack/react-query';
 import { getCopilotSeatsForEnterprise } from '@/apiClient';
 
