@@ -1,6 +1,6 @@
 using System.Text.Json.Serialization;
 
-namespace dotnet_api.Models
+namespace CopilotMetrics.WebApi.Models
 {
     public record Organization
     {

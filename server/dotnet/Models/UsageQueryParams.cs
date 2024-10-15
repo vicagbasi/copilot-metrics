@@ -1,5 +1,5 @@
 
-namespace server.dotnet_api.Models
+namespace server.CopilotMetrics.WebApi.Models
 {
     public class UsageQueryParams
     {

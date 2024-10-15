@@ -1,10 +1,10 @@
 using Microsoft.AspNetCore.Mvc;
 using System.Text.Json;
-using server.dotnet_api.Models;
+using server.CopilotMetrics.WebApi.Models;
 using System.Net.Http.Headers;
-using dotnet_api.Models;
+using CopilotMetrics.WebApi.Models;
 
-namespace server.dotnet_api.Controllers
+namespace server.CopilotMetrics.WebApi.Controllers
 {
     [ApiController]
     [Route("api")]

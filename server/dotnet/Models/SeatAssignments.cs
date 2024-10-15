@@ -1,7 +1,7 @@
 using System.ComponentModel.DataAnnotations;
 using System.Text.Json.Serialization;
 
-namespace server.dotnet_api.Models
+namespace server.CopilotMetrics.WebApi.Models
 {
     public record SeatAssignments
     {
