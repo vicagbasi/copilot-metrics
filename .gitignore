@@ -15,7 +15,11 @@ dist-ssr/
 **.env
 *.ps1
 
-# Ignore all env files in the client folder
+**nuget.config
+**copilot-metrics.code-workspace
+**test-data.json
+
+**appsettings.*
 # Start Generation Here
 *.csproj
 *.sln
