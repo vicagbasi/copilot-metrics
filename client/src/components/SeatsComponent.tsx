@@ -65,7 +65,7 @@ export const SeatsComponent = () => {
           Metrics and insights on assigned seats
         </h2>
       </div>
-      <div className="space-y-4">
+      <div className="space-y-4 pb-9">
         <div className="grid grid-cols-3 gap-4">
           <Card>
             <CardHeader>
