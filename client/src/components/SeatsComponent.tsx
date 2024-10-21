@@ -1,4 +1,4 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
+ 
 'use client';
 
 import {
@@ -19,30 +19,17 @@ import {
 import { ENTERPRISE } from '@/apiClient';
 import { useQuery } from '@tanstack/react-query';
 import { getCopilotSeatsForEnterprise } from '@/apiClient';
+import { useEffect, useState } from 'react';
+import { Seat } from '@/interfaces';
 
 export const SeatsComponent = () => {
-  const isTestData = true;
-  const testData: any[] = [
-    {
-      login: 'octocat_org',
-      githubId: 1,
-      team: 'Justice League',
-      assignedTime: '2021-08-03T18:00:00-06:00',
-      lastActivity: '2021-10-14T00:53:32-06:00',
-      editor: 'vscode/1.77.3/copilot/1.86.82',
-    },
-    {
-      login: 'octokitten_org',
-      githubId: 1,
-      team: 'Justice League',
-      assignedTime: '2021-09-23T18:00:00-06:00',
-      lastActivity: '2021-10-13T00:53:32-06:00',
-      editor: 'vscode/1.77.3/copilot/1.86.82',
-    },
-  ];
+  const isTestData = false;
+  // const testData: any[] = [];
+  const [Last7DaysActivity, setLast7DaysActivity] = useState<number | null>(null);
+  const [neverUsedSeats, setNeverUsedSeats] = useState<number | null>(null);
 
   const {
-    data: seatsData = [],
+    data: seatsData = {},
     isLoading: loadingSeats,
     isError: errorSeats,
   } = useQuery({
@@ -50,6 +37,25 @@ export const SeatsComponent = () => {
     queryFn: () => getCopilotSeatsForEnterprise(ENTERPRISE), // Fetching seats for the enterprise
     initialData: [], // Set initial data to an empty array
   });
+
+  useEffect(() => {
+    // Fetch seats data
+    console.log("Seats data", seatsData);
+    // Calculate last 7 days activity
+    const updateActiveTotal = seatsData.seats.filter(
+      (seat: Seat) =>
+        new Date(seat.last_activity_at) >=
+        new Date(new Date().setDate(new Date().getDate() - 7))
+    ).length;
+    setLast7DaysActivity(updateActiveTotal);
+
+    // Calculate never used seats
+    const updateNeverUsedSeats = seatsData.seats.filter(
+      (seat: Seat) => seat.last_activity_at === null || new Date(seat.last_activity_at) < new Date('2024-01-01')
+    ).length;   
+    setNeverUsedSeats(updateNeverUsedSeats);
+
+  }, [seatsData]);
 
   return (
     <>
@@ -67,7 +73,7 @@ export const SeatsComponent = () => {
               <CardDescription>Currently assigned seats</CardDescription>
             </CardHeader>
             <CardContent>
-              <p className="text-3xl font-bold">2</p>
+              <p className="text-3xl font-bold">{seatsData.total_seats}</p>
             </CardContent>
           </Card>
           <Card>
@@ -76,7 +82,7 @@ export const SeatsComponent = () => {
               <CardDescription>No show seats</CardDescription>
             </CardHeader>
             <CardContent>
-              <p className="text-3xl font-bold">0</p>
+              <p className="text-3xl font-bold">{ neverUsedSeats }</p>
             </CardContent>
           </Card>
           <Card>
@@ -85,7 +91,7 @@ export const SeatsComponent = () => {
               <CardDescription>No use in the last 7 days</CardDescription>
             </CardHeader>
             <CardContent>
-              <p className="text-3xl font-bold">2</p>
+              <p className="text-3xl font-bold">{ Last7DaysActivity }</p>
             </CardContent>
           </Card>
         </div>
@@ -100,7 +106,6 @@ export const SeatsComponent = () => {
                 <TableRow>
                   <TableHead>S.No</TableHead>
                   <TableHead>Login</TableHead>
-                  <TableHead>GitHub ID</TableHead>
                   <TableHead>Assigning team</TableHead>
                   <TableHead>Last Activity At</TableHead>
                   <TableHead>Last Activity Editor</TableHead>
@@ -127,53 +132,27 @@ export const SeatsComponent = () => {
                 </TableBody>
               )}
 
-              {seatsData && !isTestData && seatsData.length > 0 && (
+              {seatsData.seats && !isTestData && seatsData.seats.length > 0 && (
                 <TableBody>
-                  {seatsData.map((item: any, index: number) => (
-                    <TableRow key={index} className="text-sm">
-                      <TableCell className="py-1">{index + 1}</TableCell>
-                      <TableCell className="py-1">{item.login}</TableCell>
-                      <TableCell className="py-1">{item.githubId}</TableCell>
-                      <TableCell className="py-1">{item.team}</TableCell>
-                      <TableCell className="py-1">
-                        {new Date(item.lastActivity).toLocaleString('en-US', {
-                          hour: 'numeric',
-                          minute: 'numeric',
-                          hour12: true,
-                          month: 'long',
-                          day: 'numeric',
-                          year: 'numeric',
-                        })}
-                      </TableCell>
-                      <TableCell className="py-1">{item.editor}</TableCell>
-                    </TableRow>
-                  ))}
-                </TableBody>
-              )}
-
-              {isTestData && (
-                <TableBody>
-                  {testData.map((item: any, index: number) => (
-                    <TableRow key={index} className="text-sm">
-                      {' '}
-                      <TableCell className="py-1">{index + 1}</TableCell>{' '}
-                      <TableCell className="py-1">{item.login}</TableCell>
-                      <TableCell className="py-1">{item.githubId}</TableCell>
-                      <TableCell className="py-1">{item.team}</TableCell>
-                      <TableCell className="py-1">
-                        {new Date(item.lastActivity).toLocaleString('en-US', {
-                          hour: 'numeric',
-                          minute: 'numeric',
-                          hour12: true,
-                          month: 'long',
-                          day: 'numeric',
-                          year: 'numeric',
-                        })}
-                      </TableCell>
-                      <TableCell className="py-1">{item.editor}</TableCell>
-                    </TableRow>
-                  ))}
-                </TableBody>
+                {seatsData.seats.map((item: Seat, index: number) => (
+                  <TableRow key={item.assignee.id} className="text-sm">
+                    <TableCell className="py-1">{index + 1}</TableCell>{' '}
+                    <TableCell className="py-1">{item.assignee.login}</TableCell>
+                    <TableCell className="py-1">{item.assigning_team?.name}</TableCell>
+                    <TableCell className="py-1">
+                      {new Date(item.last_activity_at).toLocaleString('en-US', {
+                        hour: 'numeric',
+                        minute: 'numeric',
+                        hour12: true,
+                        month: 'long',
+                        day: 'numeric',
+                        year: 'numeric',
+                      })}
+                    </TableCell>
+                    <TableCell className="py-1">{item.last_activity_editor}</TableCell>
+                  </TableRow>
+                ))}
+              </TableBody>
               )}
             </Table>
           </CardContent>

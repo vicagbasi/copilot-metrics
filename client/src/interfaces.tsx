@@ -1,3 +1,5 @@
+
+
 export interface LanguageUsage {
   language: string;
   editor: string;
@@ -22,6 +24,93 @@ export interface DailyUsageSummary {
 }
 
 export type CopilotUsageData = DailyUsageSummary[];
+
+export interface Organization {
+  login: string;
+  id: number;
+  node_id: string;
+  url: string;
+  repos_url: string;
+  events_url: string;
+  hooks_url: string;
+  issues_url: string;
+  members_url: string;
+  public_members_url: string;
+  avatar_url: string;
+  description: string | null;
+}
+
+export interface Team {
+  id: number;
+  node_id: string;
+  url: string;
+  html_url: string;
+  name: string;
+  slug: string;
+  description: string;
+  privacy: string;
+  notification_setting: string;
+  permission: string;
+  members_url: string;
+  repositories_url: string;
+  parent: null | object; // Assuming parent can be null or an object
+}
+
+interface Assignee {
+  login: string;
+  id: number;
+  node_id: string;
+  avatar_url: string;
+  gravatar_id: string;
+  url: string;
+  html_url: string;
+  followers_url: string;
+  following_url: string;
+  gists_url: string;
+  starred_url: string;
+  subscriptions_url: string;
+  organizations_url: string;
+  repos_url: string;
+  events_url: string;
+  received_events_url: string;
+  type: string;
+  user_view_type: string;
+  site_admin: boolean;
+}
+
+export interface Organization {
+  login: string;
+  id: number;
+  node_id: string;
+  url: string;
+  repos_url: string;
+  events_url: string;
+  hooks_url: string;
+  issues_url: string;
+  members_url: string;
+  public_members_url: string;
+  avatar_url: string;
+  description: string | null;
+}
+
+export interface Seat {
+  created_at: string;
+  assignee: Assignee;
+  updated_at: string;
+  pending_cancellation_date: string | null;
+  plan_type: string;
+  last_activity_at: string;
+  last_activity_editor: string;
+  assigning_team: Team;
+  organization: Organization;
+}
+
+export interface SeatAssignments {
+  total_seats: number;
+  seats: Seat[];
+}
+
+
 
 // test response from github's api docs
 export const copilotUsageData: CopilotUsageData = [

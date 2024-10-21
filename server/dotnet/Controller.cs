@@ -1,34 +1,18 @@
 using Microsoft.AspNetCore.Mvc;
 using System.Text.Json;
-using server.CopilotMetrics.WebApi.Models;
-using System.Net.Http.Headers;
 using CopilotMetrics.WebApi.Models;
 
-namespace server.CopilotMetrics.WebApi.Controllers
+namespace CopilotMetrics.WebApi.Controllers
 {
     [ApiController]
     [Route("api")]
     public class CopilotUsageController : ControllerBase
     {
-        private readonly IHttpClientFactory _httpClientFactory;
-        private readonly IConfiguration _configuration;
         private readonly HttpClient _httpClient;
 
-        public CopilotUsageController(IHttpClientFactory httpClientFactory, IConfiguration configuration)
+        public CopilotUsageController(IHttpClientFactory httpClientFactory)
         {
-            _httpClientFactory = httpClientFactory;
-            _configuration = configuration;
-            _httpClient = CreateGitHubClient();
-        }
-
-        private HttpClient CreateGitHubClient()
-        {
-            var client = _httpClientFactory.CreateClient();
-            client.BaseAddress = new Uri("https://api.github.com/");
-            client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/vnd.github+json"));
-            client.DefaultRequestHeaders.Add("X-GitHub-Api-Version", "2022-11-28");
-            client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", _configuration["GithubAuthToken"]);
-            return client;
+            _httpClient = httpClientFactory.CreateClient("GitHub");
         }
 
         private string BuildQueryString(UsageQueryParams queryParams)
@@ -44,19 +28,22 @@ namespace server.CopilotMetrics.WebApi.Controllers
             if (queryParams.PerPage.HasValue)
                 queryString.Add($"per_page={queryParams.PerPage}");
 
-            return string.Join("&", queryString);
+            if (queryString.Count == 0)
+                return string.Empty;
+
+            return "?" + string.Join("&", queryString);
         }
 
         [HttpGet("enterprises/{enterprise}/copilot/usage")]
         public async Task<IActionResult> GetCopilotUsageForEnterprise(string enterprise, [FromQuery] UsageQueryParams queryParams)
         {
             var queryString = BuildQueryString(queryParams);
-            var response = await _httpClient.GetAsync($"enterprises/{enterprise}/copilot/usage?{queryString}");
+            var response = await _httpClient.GetAsync($"enterprises/{enterprise}/copilot/usage{queryString}");
 
             if (response.IsSuccessStatusCode)
             {
                 var jsonData = await response.Content.ReadAsStringAsync();
-                var result = JsonSerializer.Deserialize<UsageSummary>(jsonData);
+                var result = JsonSerializer.Deserialize<List<DailyUsageMetrics>>(jsonData);
                 return Ok(result);
             }
             else
@@ -69,12 +56,12 @@ namespace server.CopilotMetrics.WebApi.Controllers
         public async Task<IActionResult> GetCopilotUsageForTeam(string enterprise, string teamSlug, [FromQuery] UsageQueryParams queryParams)
         {
             var queryString = BuildQueryString(queryParams);
-            var response = await _httpClient.GetAsync($"enterprises/{enterprise}/team/{teamSlug}/copilot/usage?{queryString}");
+            var response = await _httpClient.GetAsync($"enterprises/{enterprise}/team/{teamSlug}/copilot/usage{queryString}");
 
             if (response.IsSuccessStatusCode)
             {
                 var jsonData = await response.Content.ReadAsStringAsync();
-                var result = JsonSerializer.Deserialize<UsageSummary>(jsonData);
+                var result = JsonSerializer.Deserialize<List<DailyUsageMetrics>>(jsonData);
                 return Ok(result);
             }
             else
@@ -87,7 +74,9 @@ namespace server.CopilotMetrics.WebApi.Controllers
         public async Task<IActionResult> GetCopilotUsageForOrg(string org, [FromQuery] UsageQueryParams queryParams)
         {
             var queryString = BuildQueryString(queryParams);
-            var response = await _httpClient.GetAsync($"orgs/{org}/copilot/usage?{queryString}");
+
+
+            var response = await _httpClient.GetAsync($"orgs/{org}/copilot/usage{queryString}");
 
             if (response.IsSuccessStatusCode)
             {
@@ -105,12 +94,12 @@ namespace server.CopilotMetrics.WebApi.Controllers
         public async Task<IActionResult> GetCopilotUsageForOrgTeam(string org, string teamSlug, [FromQuery] UsageQueryParams queryParams)
         {
             var queryString = BuildQueryString(queryParams);
-            var response = await _httpClient.GetAsync($"orgs/{org}/team/{teamSlug}/copilot/usage?{queryString}");
+            var response = await _httpClient.GetAsync($"orgs/{org}/team/{teamSlug}/copilot/usage{queryString}");
 
             if (response.IsSuccessStatusCode)
             {
                 var jsonData = await response.Content.ReadAsStringAsync();
-                var result = JsonSerializer.Deserialize<UsageSummary>(jsonData);
+                var result = JsonSerializer.Deserialize<List<DailyUsageMetrics>>(jsonData);
                 return Ok(result);
             }
             else
@@ -131,7 +120,7 @@ namespace server.CopilotMetrics.WebApi.Controllers
 
             queryString = queryString.TrimEnd('&');
 
-            var response = await _httpClient.GetAsync($"enterprises/{enterprise}/copilot/billing/seats?{queryString}");
+            var response = await _httpClient.GetAsync($"enterprises/{enterprise}/copilot/billing/seats{queryString}");
 
             if (response.IsSuccessStatusCode)
             {
@@ -145,10 +134,10 @@ namespace server.CopilotMetrics.WebApi.Controllers
             }
         }
 
-        [HttpGet("organizations")]
+        [HttpGet("user/orgs")]
         public async Task<IActionResult> GetOrganizations()
         {
-            var response = await _httpClient.GetAsync("organizations");
+            var response = await _httpClient.GetAsync("user/orgs");
 
             if (response.IsSuccessStatusCode)
             {

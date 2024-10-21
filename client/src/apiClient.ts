@@ -6,6 +6,7 @@ export const API_URL = window.location.origin + (import.meta.env.VITE_API_BASE_P
 
 export const getCopilotUsageForEnterprise = async (enterprise: string = ENTERPRISE) => {
     const response = await fetch(`${API_URL}/enterprises/${enterprise}/copilot/usage`);
+    console.log(response); 
     return response.json();
 };
 
@@ -28,13 +29,14 @@ export const getCopilotSeatsForEnterprise = async (enterprise: string = ENTERPRI
     const queryParams = new URLSearchParams();
     if (page) queryParams.append('page', page.toString());
     if (perPage) queryParams.append('per_page', perPage.toString());
-    
-    const response = await fetch(`${API_URL}/enterprises/${enterprise}/copilot/billing/seats?${queryParams.toString()}`);
+    let requestPath = `${API_URL}/enterprises/${enterprise}/copilot/billing/seats`;
+    if (queryParams.toString()) requestPath += `?${queryParams.toString()}`;
+    const response = await fetch(requestPath);
     return response.json();
 };
 
 export const getOrganizations = async () => {
-    const response = await fetch(`${API_URL}/organizations`);
+    const response = await fetch(`${API_URL}/user/orgs`);
     return response.json();
 };
 

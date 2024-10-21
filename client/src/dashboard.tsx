@@ -1,8 +1,8 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
+ 
 'use client';
 
-import { useState } from 'react';
-import { CopilotUsageData, copilotUsageData } from './interfaces';
+import { useEffect, useState } from 'react';
+import { CopilotUsageData, copilotUsageData, Organization, Team } from './interfaces';
 import { UsersComponent } from './components/UsersComponent';
 import { LanguagesBreakdown } from './components/LanguagesBreakdown';
 import { EditorsBreakdown } from './components/EditorsBreakdown';
@@ -27,7 +27,7 @@ import { Switch } from './components/ui/switch';
 
 export const CopilotDashboard: React.FC = () => {
   const [testData] = useState<CopilotUsageData>(copilotUsageData);
-  const [isTestData, setIsTestData] = useState<boolean>(true); // New state for toggle
+  const [isTestData, setIsTestData] = useState<boolean>(false); // New state for toggle
 
   const [selectedOrg, setSelectedOrg] = useState<string | null>(null);
   const [selectedTeam, setSelectedTeam] = useState<string | null>(null); // State for selected team
@@ -78,6 +78,26 @@ export const CopilotDashboard: React.FC = () => {
     setSelectedTeam(team);
   };
 
+
+  // Log organizations data when it changes
+  useEffect(() => {
+    console.log('Organizations data:', organizations);
+    if(organizations.length > 0) {
+      setSelectedOrg(organizations[0].login);
+      setSelectedTeam("All");
+    }
+  }, [organizations]);
+
+  // Log usage data when it changes
+  useEffect(() => {
+    console.log('Usage data:', usageData);
+  }, [usageData]);
+
+  // Log teams data when it changes
+  useEffect(() => {
+    console.log('Teams data:', teams);
+  }, [teams]);
+
   return (
     <>
       <div className="flex flex-col items-center justify-center py-5">
@@ -93,20 +113,28 @@ export const CopilotDashboard: React.FC = () => {
             <SelectValue placeholder="Select Organization" />
           </SelectTrigger>
           <SelectContent>
-            {loadingOrgs ? (
+            {loadingOrgs && (
               <SelectItem disabled value="loading">
                 Loading organizations...
               </SelectItem>
-            ) : errorOrgs ? (
+            )}
+
+            {!loadingOrgs && errorOrgs && (
               <SelectItem disabled value="error">
                 Error loading organizations...
               </SelectItem>
-            ) : (
-              organizations.map((org: any) => (
+            )}
+
+            {!loadingOrgs && !errorOrgs && organizations.length > 0 ? (
+              organizations.map((org: Organization) => (
                 <SelectItem key={org.id} value={org.login}>
-                  {org.name}
+                  {org.login}
                 </SelectItem>
               ))
+            ) : (
+              <SelectItem disabled value="no-orgs">
+                No organizations available...
+              </SelectItem>
             )}
           </SelectContent>
         </Select>
@@ -116,25 +144,34 @@ export const CopilotDashboard: React.FC = () => {
             <SelectValue placeholder="Select Team" />
           </SelectTrigger>
           <SelectContent>
-            {loadingTeams ? (
+            {loadingTeams && (
               <SelectItem disabled value="loading">
                 Loading teams...
               </SelectItem>
-            ) : errorTeams ? (
-              <SelectItem disabled value="error">
+            )}
+
+            {!loadingTeams && errorTeams && (
+              <SelectItem disabled value="">
                 Error loading teams...
               </SelectItem>
-            ) : teams.length > 0 ? (
-              teams.map((team: any) => (
-                <SelectItem key={team.id} value={team.slug}>
-                  {team.name}
-                </SelectItem>
-              ))
-            ) : (
-            <SelectItem disabled value="no-teams">
-              No teams available for this organization...
-            </SelectItem>
             )}
+
+            {!loadingTeams && !errorTeams && (teams ?? []).length > 0 && (
+              <>
+                <SelectItem value="All">All Teams</SelectItem>
+                {teams.map((team: Team) => (
+                  <SelectItem key={team.id} value={team.slug}>
+                    {team.name}
+                  </SelectItem>
+                ))}
+              </>
+            )}
+
+            {/* {!loadingTeams && !errorTeams && (teams ?? []).length === 0 && (
+              <SelectItem disabled value="no-teams">
+                No teams available for this organization...
+              </SelectItem>
+            )} */}
           </SelectContent>
         </Select>
         {/* New Switch for Test Data / Live Data */}

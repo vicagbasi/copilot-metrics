@@ -1,68 +1,34 @@
-using System.ComponentModel.DataAnnotations;
-using System.Text.Json.Serialization;
-
-namespace server.CopilotMetrics.WebApi.Models
+    
+namespace CopilotMetrics.WebApi.Models
 {
     public record UsageSummary
     {
-        [Required]
-        public required List<DailyUsageMetrics> Days { get; init; }
-    }
-
-    public record DailyUsageMetrics
-    {
-        [JsonPropertyName("day")]
-        public string? Day { get; init; }
-
-        [JsonPropertyName("total_suggestions_count")]
-        public int TotalSuggestionsCount { get; init; }
-
-        [JsonPropertyName("total_acceptances_count")]
-        public int TotalAcceptancesCount { get; init; }
-
-        [JsonPropertyName("total_lines_suggested")]
-        public int TotalLinesSuggested { get; init; }
-
-        [JsonPropertyName("total_lines_accepted")]
-        public int TotalLinesAccepted { get; init; }
-
-        [JsonPropertyName("total_active_users")]
-        public int TotalActiveUsers { get; init; }
-
-        [JsonPropertyName("total_chat_acceptances")]
-        public int TotalChatAcceptances { get; init; }
-
-        [JsonPropertyName("total_chat_turns")]
-        public int TotalChatTurns { get; init; }
-
-        [JsonPropertyName("total_active_chat_users")]
-        public int TotalActiveChatUsers { get; init; }
-
-        [JsonPropertyName("breakdown")]
-        public required List<Breakdown> Breakdown { get; init; }
+        public List<DailyUsageMetrics>? Days { get; init; }
     }
 
     public record Breakdown
     {
-        [JsonPropertyName("language")]
-        public required string Language { get; init; }
-
-        [JsonPropertyName("editor")]
-        public required string Editor { get; init; }
-
-        [JsonPropertyName("suggestions_count")]
-        public int SuggestionsCount { get; init; }
-
-        [JsonPropertyName("acceptances_count")]
-        public int AcceptancesCount { get; init; }
-
-        [JsonPropertyName("lines_suggested")]
-        public int LinesSuggested { get; init; }
-
-        [JsonPropertyName("lines_accepted")]
-        public int LinesAccepted { get; init; }
-
-        [JsonPropertyName("active_users")]
-        public int ActiveUsers { get; init; }
+        public string? language { get; init; }
+        public string? editor { get; init; }
+        public int suggestions_count { get; init; }
+        public int acceptances_count { get; init; }
+        public int lines_suggested { get; init; }
+        public int lines_accepted { get; init; }
+        public int active_users { get; init; }
     }
+
+    public record DailyUsageMetrics
+    {
+        public string? day { get; init; }
+        public int total_suggestions_count { get; init; }
+        public int total_acceptances_count { get; init; }
+        public int total_lines_suggested { get; init; }
+        public int total_lines_accepted { get; init; }
+        public int total_active_users { get; init; }
+        public int total_chat_acceptances { get; init; }
+        public int total_chat_turns { get; init; }
+        public int total_active_chat_users { get; init; }
+        public List<Breakdown>? breakdown { get; init; }
+    }
+
 }

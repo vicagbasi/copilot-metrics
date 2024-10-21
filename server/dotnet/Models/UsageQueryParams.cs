@@ -1,11 +1,11 @@
 
-namespace server.CopilotMetrics.WebApi.Models
+namespace CopilotMetrics.WebApi.Models
 {
     public class UsageQueryParams
     {
         public string? Since { get; set; }
         public string? Until { get; set; }
-        public int? Page { get; set; } = 1; // Default value
-        public int? PerPage { get; set; } = 28; // Default value
+        public int? Page { get; set; } // Default value
+        public int? PerPage { get; set; } // Default value
     }
 }
